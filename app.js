@@ -3,11 +3,12 @@
  * Module dependencies.
  */
 
-var express = require('express')
-  , routes = require('./routes')
-  , user = require('./routes/user')
-  , http = require('http')
-  , path = require('path');
+var express = require('express'),
+    routes = require('./routes'),
+    user = require('./routes/user'),
+    http = require('http'),
+    path = require('path'),
+    puppeteer = require('./libs/puppeteer');
 
 var app = express();
 
@@ -32,6 +33,8 @@ app.configure('development', function(){
 
 app.get('/', routes.index);
 app.get('/users', user.list);
+
+puppeteer.connect({ _id: 14, irc_username: 'davecowbot' }, 'irc.freenode.net', ['#ix2-bot', '#ix2-test'], function() { console.log('connected');});
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));
