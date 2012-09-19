@@ -1,0 +1,15 @@
+extends ../layout
+
+block content
+  h1 Parranoid
+  p Log in to use Parranoid
+  form(method='post',action='/login')
+    label(for='username') Email
+    input(name='username', type='text')
+
+    label(for='password') Password
+    input(name='password', type='password')
+
+    input(name='returnUrl', type='hidden', value='#{returnUrl}')
+
+    button(type='submit') Log In

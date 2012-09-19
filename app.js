@@ -9,7 +9,8 @@ var express = require('express'),
     path = require('path'),
     service = require('./libs/service'),
     environment = require('./environment'),
-    puppeteer = require('./libs/puppeteer');
+    puppeteer = require('./libs/puppeteer'),
+    passport = require('passport');
 
 var app = express();
 
@@ -23,6 +24,8 @@ app.configure(function(){
   app.use(express.methodOverride());
   app.use(express.cookieParser('your secret here'));
   app.use(express.session());
+  app.use(passport.initialize());
+  app.use(passport.session());
   app.use(app.router);
   app.use(require('less-middleware')({ src: __dirname + '/public' }));
   app.use(express.static(path.join(__dirname, 'public')));
@@ -31,15 +34,13 @@ app.configure(function(){
 var server = http.createServer(app);
 
 service.init(environment);
-var controllers = require('./libs/controllers')(app, service, server);
+var controllers = require('./libs/controllers')(app, service, puppeteer, server);
 
 app.configure('development', function(){
   app.use(express.errorHandler());
 });
 
 app.get('/', routes.index);
-
-puppeteer.connect({ _id: 14, irc_username: 'davecowbot' }, 'irc.freenode.net', ['#ix2-bot', '#ix2-test'], function() { console.log('connected');});
 
 server.listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));
