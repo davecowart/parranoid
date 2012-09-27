@@ -1,13 +1,10 @@
 var irc = require('irc');
-var bot, screenname, socketManager;
+var bot, screenname;
 
 module.exports.init = function(user, connection, clientManager, channels, connected) {
-	console.log('creating puppet');
 	bot = new irc.Client(connection, user.irc_username, {
-		channels: channels || ['#ix2-bot']
+		channels: channels || []
 	});
-
-	socketManager = clientManager;
 
 	bot.addListener('message', function(from, to, message) {
 		//TODO: log to database
@@ -16,17 +13,14 @@ module.exports.init = function(user, connection, clientManager, channels, connec
 
 	bot.addListener('registered', function(message) {
 		screenname = message.args[0];
-		
-		//emit connection and screenname over a socket to update all clients
-		var cc = clientManager.connectedClients[user._id];
-		for (var i = cc.length - 1; i >= 0; i--) {
-			var socketId = cc[i];
-			var socket = clientManager.clients[socketId];
-			socket.emit('registered', { connection: connection, screenname: screenname });
-		}
 
-		if (connected)
-			connected();
+		emit('registered', { connection: connection, screenname: screenname }, clientManager, user._id);
+	});
+
+	bot.addListener('raw', function(message) {
+		if (message.command === 'QUIT') {
+			emit('quit', { connection: connection }, clientManager, user._id);
+		}
 	});
 
 	bot.addListener('join', function(channel, nick, message) {
@@ -42,5 +36,21 @@ module.exports.init = function(user, connection, clientManager, channels, connec
 		console.log(bot.chans);
 	});
 
-	return bot;
+	return this;
 };
+
+module.exports.connect = function() {
+	bot.connect();
+};
+
+module.exports.quit = function() {
+	bot.disconnect('Later!');
+};
+
+function emit(event, data, clientManager, userId) {
+	console.log('emitting ' + event);
+	var cc = clientManager.connectedClients[userId];
+	for (var i = cc.length - 1; i >= 0; i--) {
+		clientManager.clients[cc[i]].emit(event, data);
+	}
+}

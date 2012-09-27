@@ -1,6 +1,5 @@
 function ConnectionManager(puppeteer) {
 	var self = this;
-	self.puppeteer = puppeteer;
 	self.clients = {};
 	self.connectedClients = {};
 	self.connect = function(user, socketId) {
@@ -11,7 +10,13 @@ function ConnectionManager(puppeteer) {
 
 		var socket = self.clients[socketId];
 		socket.on('connectServer', function(data) {
-			self.puppeteer.connect(user, data.connection, self);
+			puppeteer.connect(user, data.connection, self);
+		});
+
+		socket.on('removeServer', function(data) {
+			var puppet = puppeteer.puppets()[userId][data.connection];
+			puppet.quit();
+			console.log(puppet);
 		});
 	};
 }

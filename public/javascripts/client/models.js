@@ -53,16 +53,20 @@ function ClientViewModel(theSocket) {
 		self.servers.push(server);
 	});
 
+	self.socket.on('quit', function(data) {
+		var server = _.find(self.servers(), function(server) { return server.connection() === data.connection; });
+		self.servers.remove(server);
+	});
+
 	self.addServer = function(serverConnection) {
 		var connection = serverConnection.connection || prompt('New Connection', 'irc.freenode.net');
 		if (!connection) return;
 
-		self.socket.emit('connectServer', { connection: 'irc.freenode.net' });
+		self.socket.emit('connectServer', { connection: connection });
 	};
 
 	self.removeServer = function(server) {
-		//TODO: put this in socket listener
-		// self.servers.remove(server);
+		self.socket.emit('removeServer', { connection: server.connection() });
 	};
 
 	self.joinRoom = function() {
