@@ -1,10 +1,13 @@
 var irc = require('irc');
-var bot, screenname;
+var bot, screenname, socketManager;
 
-module.exports.init = function(screenname, connection, channels, connected) {
-	bot = new irc.Client(connection, screenname, {
-		channels: channels || []
+module.exports.init = function(user, connection, clientManager, channels, connected) {
+	console.log('creating puppet');
+	bot = new irc.Client(connection, user.irc_username, {
+		channels: channels || ['#ix2-bot']
 	});
+
+	socketManager = clientManager;
 
 	bot.addListener('message', function(from, to, message) {
 		//TODO: log to database
@@ -12,9 +15,16 @@ module.exports.init = function(screenname, connection, channels, connected) {
 	});
 
 	bot.addListener('registered', function(message) {
-		console.log('logged in');
 		screenname = message.args[0];
-		//TODO: emit screenname over a socket to update the client
+		
+		//emit connection and screenname over a socket to update all clients
+		var cc = clientManager.connectedClients[user._id];
+		for (var i = cc.length - 1; i >= 0; i--) {
+			var socketId = cc[i];
+			var socket = clientManager.clients[socketId];
+			socket.emit('registered', { connection: connection, screenname: screenname });
+		}
+
 		if (connected)
 			connected();
 	});

@@ -2,6 +2,7 @@ function ServerViewModel() {
 	var self = this;
 	self.connection = ko.observable();
 	self.rooms = ko.observableArray([]);
+	self.screenname = ko.observable();
 
 	self.joinRoom = function(roomName, done) {
 		var room = new RoomViewModel();
@@ -32,22 +33,63 @@ function MessageViewModel() {
 	self.message = '';
 }
 
-function ClientViewModel() {
+function ClientViewModel(theSocket) {
 	var self = this;
 	self.servers = ko.observableArray([]);
+	self.socket = theSocket;
 
 	self.roomList = ko.computed(function() {
 		return _.flatten(_.map(self.servers(), function(server) { return server.rooms(); }));
 	});
 
-	self.addServer = function(serverConnection, done) {
+	self.socket.on('connect', function() {
+		$.post('/client/connect', { socketid: this.socket.sessionid });
+	});
+
+	self.socket.on('registered', function(data) {
+		var server = new ServerViewModel();
+		server.connection(data.connection);
+		server.screenname(data.screenname);
+		self.servers.push(server);
+	});
+
+	self.addServer = function(serverConnection) {
 		var connection = serverConnection.connection || prompt('New Connection', 'irc.freenode.net');
 		if (!connection) return;
 
-		//TODO: put this in response of an ajax call
-		var server = new ServerViewModel();
-		server.connection(connection);
-		self.servers.push(server);
-		if (done) done();
+		self.socket.emit('connectServer', { connection: 'irc.freenode.net' });
+	};
+
+	self.removeServer = function(server) {
+		//TODO: put this in socket listener
+		// self.servers.remove(server);
+	};
+
+	self.joinRoom = function() {
+		var roomInput = $('#join-room');
+		var channel = roomInput.val();
+		if (_.any(self.roomList(), function(room) { return room.name() === channel; })) {
+			roomInput.val('');
+			return;
+		}
+
+		var connection = $('#join-server').val();
+
+		//TODO: put this in socket listener
+		// var selectedConnection = _.find(self.servers(), function(server) { return server.connection() === connection; });
+		// var room = new RoomViewModel();
+		// room.name(channel);
 	};
 }
+
+
+
+
+
+
+
+
+
+
+
+

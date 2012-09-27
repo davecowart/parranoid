@@ -1,11 +1,11 @@
 var fs = require('fs');
 
-module.exports = function(app, service, http) {
+module.exports = function(app, service, http, server) {
 	fs.readdir(__dirname + '/../controllers', function(err, files) {
 		if (err) throw err;
 		files.forEach(function(file) {
 			var name = file.replace('.js', '');
-			require('./../controllers/' + name)(app, service, http);
+			require('./../controllers/' + name)(app, service, http, server);
 		});
 	});
 };

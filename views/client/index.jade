@@ -9,8 +9,8 @@ block content
 			ul#server-list(data-bind='foreach: servers')
 				li
 					span(data-bind='text: connection')
-					a(href='#') X
-			a(href='#') Add Server
+					a(href='#', data-bind='click: $root.removeServer') X
+			a(href='#', data-bind='click: $root.addServer') Add Server
 
 		#rooms
 			ul
@@ -53,15 +53,16 @@ block content
 			// /ko
 			#tabs-join
 				label(for='join-server') Server
-				select#join-server
+				select#join-server(data-bind='options: $root.servers, optionsText: "connection", optionsValue: "connection"')
 
 				label(for='join-room') Room
 				input#join-room(type='text', value='#ix2-test')	
 
-				button#join-button(type='button') Join
+				button#join-button(type='button', data-bind='click: $root.joinRoom') Join
 
 block style
 	!= renderStyles('client')
 
 block script
+	script(type='text/javascript', src='socket.io/socket.io.js')
 	!= renderJs('client')
