@@ -6,24 +6,23 @@ block content
 	#client
 	
 		#servers
-			ul#server-list
-				li Server 1
-				li Server 2
-				li Server 3
+			ul#server-list(data-bind='foreach: servers')
+				li
+					span(data-bind='text: connection')
+					a(href='#') X
 			a(href='#') Add Server
 
 		#rooms
 			ul
+				// ko foreach: roomList
 				li
-					a(href='#Room1') Room 1
-				li
-					a(href='#Room2') Room 2
-				li
-					a(href='#Room3') Room 3
+					a(data-bind='attr: {href: "#" + identifier()}, text: name')
+				// /ko
 				li
 					a(href='#tabs-join') +
 
-			.room#Room1
+			// ko foreach: roomList
+			.room(data-bind='attr: {id: identifier()}')
 				.toolbar
 					p Topic: I like turtles
 					a(href='#') Close
@@ -50,63 +49,8 @@ block content
 						span.timestamp 12:34
 						span.messageBody This is a message that was sent from somewhere
 					input.messageInput(type='text')
-					button.send(type='button') Send				
-			.room#Room2
-				.toolbar
-					p Topic: It's noisy out there
-					a(href='#') Close
-				.users
-					ul
-						li User1
-						li User2
-						li User3
-				.messages
-					.message
-						span.sender User1
-						span.timestamp 12:34
-						span.messageBody This is a message that was sent from somewhere
-					.message
-						span.sender User1
-						span.timestamp 12:34
-						span.messageBody This is a message that was sent from somewhere
-					.message
-						span.sender User1
-						span.timestamp 12:34
-						span.messageBody This is a message that was sent from somewhere
-					.message
-						span.sender User1
-						span.timestamp 12:34
-						span.messageBody This is a message that was sent from somewhere
-					input.messageInput(type='text')
-					button.send(type='button') Send				
-			.room#Room3
-				.toolbar
-					p Topic: Do it anyway
-					a(href='#') Close
-				.users
-					ul
-						li User1
-						li User2
-						li User3
-				.messages
-					.message
-						span.sender User1
-						span.timestamp 12:34
-						span.messageBody This is a message that was sent from somewhere
-					.message
-						span.sender User1
-						span.timestamp 12:34
-						span.messageBody This is a message that was sent from somewhere
-					.message
-						span.sender User1
-						span.timestamp 12:34
-						span.messageBody This is a message that was sent from somewhere
-					.message
-						span.sender User1
-						span.timestamp 12:34
-						span.messageBody This is a message that was sent from somewhere
-					input.messageInput(type='text')
-					button.send(type='button') Send			
+					button.send(type='button') Send		
+			// /ko
 			#tabs-join
 				label(for='join-server') Server
 				select#join-server

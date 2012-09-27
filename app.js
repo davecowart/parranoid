@@ -18,7 +18,7 @@ var app = express();
 bundleup(app, __dirname + '/assets', {
   staticRoot: __dirname + '/public',
   staticUrlRoot: '/',
-  bundle: true,
+  bundle: false,
   minifyCss: true,
   minifyJs: true
 });
