@@ -1,12 +1,5 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-}
-a {
-  color: #00B7FF;
-}
 #client {
-  border: solid 1px black;
+  border: solid 1px #000;
   overflow: auto;
 }
 #client #servers {
@@ -19,11 +12,11 @@ a {
 #client #servers #server-list li {
   list-style: none;
 }
-#client #servers #server-list li.connected {
-  color: green;
+#client #servers #server-list li .connected {
+  color: #008000;
 }
-#client #servers #server-list li.disconnected {
-  color: red;
+#client #servers #server-list li .disconnected {
+  color: #f00;
 }
 #client #rooms {
   float: left;
@@ -31,12 +24,12 @@ a {
 }
 #client #rooms .room .toolbar {
   clear: both;
-  border-bottom: solid 1px black;
+  border-bottom: solid 1px #000;
 }
 #client #rooms .room .users {
   float: left;
   width: 100px;
-  border-right: solid 1px black;
+  border-right: solid 1px #000;
   height: 100%;
 }
 #client #rooms .room .messages {

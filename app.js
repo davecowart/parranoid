@@ -8,11 +8,20 @@ var express = require('express'),
     http = require('http'),
     path = require('path'),
     service = require('./libs/service'),
+    bundleup = require('bundle-up'),
     environment = require('./environment'),
     puppeteer = require('./libs/puppeteer'),
     passport = require('passport');
 
 var app = express();
+
+bundleup(app, __dirname + '/assets', {
+  staticRoot: __dirname + '/public',
+  staticUrlRoot: '/',
+  bundle: true,
+  minifyCss: true,
+  minifyJs: true
+});
 
 app.configure(function(){
   app.set('port', process.env.PORT || 3000);

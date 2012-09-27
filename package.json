@@ -12,6 +12,8 @@
     "irc": "*",
     "mongoose": "*",
     "passport": "*",
-    "passport-local": "*"
+    "passport-local": "*",
+    "bundle-up": "*",
+    "stylus": "*"
   }
 }

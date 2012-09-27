@@ -116,5 +116,8 @@ block content
 
 				button#join-button(type='button') Join
 
+block style
+	!= renderStyles('client')
+
 block script
-	script(type='text/javascript', src='/javascripts/client.js')
+	!= renderJs('client')
