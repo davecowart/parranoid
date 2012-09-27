@@ -5,3 +5,41 @@ body {
 a {
   color: #00B7FF;
 }
+#client {
+  border: solid 1px black;
+  overflow: auto;
+}
+#client #servers {
+  float: left;
+  max-width: 300px;
+}
+#client #servers #server-list {
+  padding-left: 0;
+}
+#client #servers #server-list li {
+  list-style: none;
+}
+#client #servers #server-list li.connected {
+  color: green;
+}
+#client #servers #server-list li.disconnected {
+  color: red;
+}
+#client #rooms {
+  float: left;
+  min-width: 400px;
+}
+#client #rooms .room .toolbar {
+  clear: both;
+  border-bottom: solid 1px black;
+}
+#client #rooms .room .users {
+  float: left;
+  width: 100px;
+  border-right: solid 1px black;
+  height: 100%;
+}
+#client #rooms .room .messages {
+  float: left;
+  width: 300px;
+}

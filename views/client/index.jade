@@ -2,4 +2,119 @@ extends ../layout
 
 block content
 	h1 Parranoid
+
+	#client
 	
+		#servers
+			ul#server-list
+				li Server 1
+				li Server 2
+				li Server 3
+			a(href='#') Add Server
+
+		#rooms
+			ul
+				li
+					a(href='#Room1') Room 1
+				li
+					a(href='#Room2') Room 2
+				li
+					a(href='#Room3') Room 3
+				li
+					a(href='#tabs-join') +
+
+			.room#Room1
+				.toolbar
+					p Topic: I like turtles
+					a(href='#') Close
+				.users
+					ul
+						li User1
+						li User2
+						li User3
+				.messages
+					.message
+						span.sender User1
+						span.timestamp 12:34
+						span.messageBody This is a message that was sent from somewhere
+					.message
+						span.sender User1
+						span.timestamp 12:34
+						span.messageBody This is a message that was sent from somewhere
+					.message
+						span.sender User1
+						span.timestamp 12:34
+						span.messageBody This is a message that was sent from somewhere
+					.message
+						span.sender User1
+						span.timestamp 12:34
+						span.messageBody This is a message that was sent from somewhere
+					input.messageInput(type='text')
+					button.send(type='button') Send				
+			.room#Room2
+				.toolbar
+					p Topic: It's noisy out there
+					a(href='#') Close
+				.users
+					ul
+						li User1
+						li User2
+						li User3
+				.messages
+					.message
+						span.sender User1
+						span.timestamp 12:34
+						span.messageBody This is a message that was sent from somewhere
+					.message
+						span.sender User1
+						span.timestamp 12:34
+						span.messageBody This is a message that was sent from somewhere
+					.message
+						span.sender User1
+						span.timestamp 12:34
+						span.messageBody This is a message that was sent from somewhere
+					.message
+						span.sender User1
+						span.timestamp 12:34
+						span.messageBody This is a message that was sent from somewhere
+					input.messageInput(type='text')
+					button.send(type='button') Send				
+			.room#Room3
+				.toolbar
+					p Topic: Do it anyway
+					a(href='#') Close
+				.users
+					ul
+						li User1
+						li User2
+						li User3
+				.messages
+					.message
+						span.sender User1
+						span.timestamp 12:34
+						span.messageBody This is a message that was sent from somewhere
+					.message
+						span.sender User1
+						span.timestamp 12:34
+						span.messageBody This is a message that was sent from somewhere
+					.message
+						span.sender User1
+						span.timestamp 12:34
+						span.messageBody This is a message that was sent from somewhere
+					.message
+						span.sender User1
+						span.timestamp 12:34
+						span.messageBody This is a message that was sent from somewhere
+					input.messageInput(type='text')
+					button.send(type='button') Send			
+			#tabs-join
+				label(for='join-server') Server
+				select#join-server
+
+				label(for='join-room') Room
+				input#join-room(type='text', value='#ix2-test')	
+
+				button#join-button(type='button') Join
+
+block script
+	script(type='text/javascript', src='/javascripts/client.js')

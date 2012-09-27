@@ -6,3 +6,45 @@ body {
 a {
   color: #00B7FF;
 }
+
+#client {
+	border:solid 1px black;
+	overflow:auto;
+
+	#servers {
+		float:left;
+		max-width:300px;
+		#server-list {
+			padding-left:0;
+			li {
+				list-style:none;
+			}
+			li.connected {
+				color:green;
+			}
+			li.disconnected {
+				color:red;
+			}
+		}
+	}
+	#rooms {
+		float:left;
+		min-width:400px;
+		.room {
+			.toolbar {
+				clear:both;
+				border-bottom:solid 1px black;
+			}
+			.users {
+				float:left;
+				width:100px;
+				border-right:solid 1px black;
+				height:100%;
+			}
+			.messages {
+				float:left;
+				width:300px;
+			}
+		}
+	}
+}
