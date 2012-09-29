@@ -1,5 +1,7 @@
+var clientViewModel;
 $(function() {
-	$('#rooms').tabs();
 	var socket = io.connect('http://localhost');
-	ko.applyBindings(new ClientViewModel(socket));
+	clientViewModel = new ClientViewModel(socket);
+	ko.applyBindings(clientViewModel);
+	$('#rooms').tabs();
 });

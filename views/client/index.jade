@@ -27,10 +27,8 @@ block content
 					p Topic: I like turtles
 					a(href='#') Close
 				.users
-					ul
-						li User1
-						li User2
-						li User3
+					ul(data-bind='foreach: users')
+						li(data-bind='text: $data')
 				.messages
 					.message
 						span.sender User1

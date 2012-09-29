@@ -16,7 +16,11 @@ function ConnectionManager(puppeteer) {
 		socket.on('removeServer', function(data) {
 			var puppet = puppeteer.puppets()[userId][data.connection];
 			puppet.quit();
-			console.log(puppet);
+		});
+
+		socket.on('join', function(data) {
+			var puppet = puppeteer.puppets()[userId][data.connection];
+			puppet.join(data.channel);
 		});
 	};
 }

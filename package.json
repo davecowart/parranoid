@@ -15,6 +15,7 @@
     "passport-local": "*",
     "bundle-up": "*",
     "stylus": "*",
-    "socket.io": "*"
+    "socket.io": "*",
+    "underscore": "*"
   }
 }

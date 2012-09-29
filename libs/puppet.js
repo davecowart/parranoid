@@ -1,4 +1,5 @@
 var irc = require('irc');
+var _ = require('underscore');
 var bot, screenname;
 
 module.exports.init = function(user, connection, clientManager, channels, connected) {
@@ -20,23 +21,29 @@ module.exports.init = function(user, connection, clientManager, channels, connec
 	bot.addListener('raw', function(message) {
 		if (message.command === 'QUIT') {
 			emit('quit', { connection: connection }, clientManager, user._id);
+		} else if (message.command === 'rpl_namreply') {
+			var users = message.args[3].split(' ');
+			emit('users', { connection: connection, channel: message.args[2], users: users }, clientManager, user._id);
+		} else {
+			console.log(message.command);
 		}
 	});
 
 	bot.addListener('join', function(channel, nick, message) {
-		console.log('%s joined %s', nick, channel);
-		if (nick === screenname) {
-			bot.addListener('message' + channel, function(from, message) {
-				//TODO: pass in a listener from the user of this module (that emits the message on a socket)
-				console.log('received a channel message in %s from %s: %s', channel, from, message);
-			});
+		if (nick !== screenname) {
+			emit('join', { connection: connection, channel: channel, nick: nick }, clientManager, user._id);
+		} else {
+			console.log(bot.chans);
+			var output = { connection: connection, channel: channel, chan: _.find(bot.chans, function(chan) { return chan.key === channel; }) };
+			emit('joinRoom', output, clientManager, user._id);
 		}
-		//TODO: emit bot.chans over a socket to update the client			
-		console.log('updating client status:');
-		console.log(bot.chans);
 	});
 
 	return this;
+};
+
+module.exports.refresh = function() {
+	emit('refresh', bot.chans);
 };
 
 module.exports.connect = function() {
@@ -45,6 +52,10 @@ module.exports.connect = function() {
 
 module.exports.quit = function() {
 	bot.disconnect('Later!');
+};
+
+module.exports.join = function(channel) {
+	bot.join(channel);
 };
 
 function emit(event, data, clientManager, userId) {
