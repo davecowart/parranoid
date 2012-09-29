@@ -87,11 +87,6 @@ function ClientViewModel(theSocket) {
 		room.users(data.users);
 	});
 
-	self.socket.on('refresh', function(data) {
-		var server = self.findServer(data.connection);
-		debugger;
-	});
-
 	self.findServer = function(connection) {
 		return _.find(self.servers(), function(server) { return server.connection() === connection; });
 	};
@@ -114,14 +109,7 @@ function ClientViewModel(theSocket) {
 			roomInput.val('');
 			return;
 		}
-
-		var connection = $('#join-server').val();
-		self.socket.emit('join', { connection: connection, channel: channel });
-		
-		//TODO: put this in socket listener
-		// var selectedConnection = _.find(self.servers(), function(server) { return server.connection() === connection; });
-		// var room = new RoomViewModel();
-		// room.name(channel);
+		self.socket.emit('join', { connection: $('#join-server').val(), channel: channel });
 	};
 
 	self.roomList.subscribe(function() {

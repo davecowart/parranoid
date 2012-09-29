@@ -42,10 +42,6 @@ module.exports.init = function(user, connection, clientManager, channels, connec
 	return this;
 };
 
-module.exports.refresh = function() {
-	emit('refresh', bot.chans);
-};
-
 module.exports.connect = function() {
 	bot.connect();
 };
