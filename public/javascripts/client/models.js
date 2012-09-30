@@ -71,7 +71,7 @@ function ClientViewModel(theSocket) {
 	self.socket.on('part', function(data) {
 		var server = self.findServer(data.connection);
 		var room = self.findRoom(data.connection, data.channel);
-		room.users().remove(data.nick);
+		room.users.remove(data.nick);
 	});
 
 	self.socket.on('joinRoom', function(data) {

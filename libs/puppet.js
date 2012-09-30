@@ -14,7 +14,6 @@ module.exports.init = function(user, connection, clientManager, channels, connec
 
 	bot.addListener('registered', function(message) {
 		screenname = message.args[0];
-
 		emit('registered', { connection: connection, screenname: screenname }, clientManager, user._id);
 	});
 
