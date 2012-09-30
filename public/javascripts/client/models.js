@@ -65,7 +65,7 @@ function ClientViewModel(theSocket) {
 	self.socket.on('join', function(data) {
 		var server = self.findServer(data.connection);
 		var room = _.find(server.rooms(), function(room) { return room.name() === data.channel && room.connection() === data.connection; });
-		room.users().push(data.nick);
+		room.users.push(data.nick);
 	});
 
 	self.socket.on('part', function(data) {
