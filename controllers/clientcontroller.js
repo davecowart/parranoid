@@ -27,6 +27,11 @@ function ConnectionManager(puppeteer) {
 			var puppet = puppeteer.puppets()[userId][data.connection];
 			puppet.part(data.channel);
 		});
+
+		socket.on('message', function(data) {
+			var puppet = puppeteer.puppets()[userId][data.connection];
+			puppet.message(data.channel, data.text);
+		});
 	};
 }
 

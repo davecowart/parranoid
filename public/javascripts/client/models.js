@@ -134,8 +134,16 @@ function ClientViewModel(theSocket) {
 		self.socket.emit('part', { connection: room.connection(), channel: room.name() });
 	};
 
+	self.sendMessage = function(room) {
+		var input = $('#msg_' + room.identifier());
+		var server = self.findServer(room.connection());
+		self.socket.emit('message', { connection: room.connection(), channel: room.name(), text: input.val() });
+		var message = new MessageViewModel({nick: server.screenname(), text: input.val() });
+		room.messages.push(message);
+		input.val('');
+	};
+
 	self.roomList.subscribe(function() {
-		console.log('refreshing tabs');
 		setTimeout(function() { $('#rooms').tabs('destroy').tabs(); }, 50);
 	});
 }

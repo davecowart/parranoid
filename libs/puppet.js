@@ -66,6 +66,10 @@ module.exports.part = function(channel) {
 	bot.part(channel);
 };
 
+module.exports.message = function(channel, text) {
+	bot.say(channel, text);
+};
+
 function emit(event, data, clientManager, userId) {
 	console.log('emitting ' + event);
 	var cc = clientManager.connectedClients[userId];
