@@ -64,12 +64,19 @@ function ClientViewModel(theSocket) {
 
 	self.socket.on('join', function(data) {
 		var server = self.findServer(data.connection);
+		var room = _.find(server.rooms(), function(room) { return room.name() === data.channel && room.connection() === data.connection; });
 		room.users().push(data.nick);
+	});
+
+	self.socket.on('part', function(data) {
+		var server = self.findServer(data.connection);
+		var room = self.findRoom(data.connection, data.channel);
+		room.users().remove(data.nick);
 	});
 
 	self.socket.on('joinRoom', function(data) {
 		var server = self.findServer(data.connection);
-		var room = _.find(server.rooms(), function(room) { return room.name() === data.channel; });
+		var room = self.findRoom(data.connection, data.channel);
 		if (room !== undefined) return;
 		room = new RoomViewModel();
 		room.name(data.channel);
@@ -79,16 +86,27 @@ function ClientViewModel(theSocket) {
 		server.rooms.push(room);
 	});
 
+	self.socket.on('partRoom', function(data) {
+		var server = self.findServer(data.connection);
+		var room = self.findRoom(data.connection, data.channel);
+		server.rooms.remove(room);
+	});
+
 	self.socket.on('users', function(data) {
 		var server = self.findServer(data.connection);
 		if (server === undefined) return;
-		var room = _.find(server.rooms(), function(room) { return room.name() === data.channel; });
+		var room = self.findRoom(data.connection, data.channel);
 		if (room === undefined) return;
 		room.users(data.users);
 	});
 
 	self.findServer = function(connection) {
 		return _.find(self.servers(), function(server) { return server.connection() === connection; });
+	};
+
+	self.findRoom = function(connection, channel) {
+		var server = self.findServer(connection);
+		return _.find(server.rooms(), function(room) { return room.name() === channel && room.connection() === connection; });
 	};
 
 	self.addServer = function(serverConnection) {
@@ -110,6 +128,10 @@ function ClientViewModel(theSocket) {
 			return;
 		}
 		self.socket.emit('join', { connection: $('#join-server').val(), channel: channel });
+	};
+
+	self.partRoom = function(room) {
+		self.socket.emit('part', { connection: room.connection(), channel: room.name() });
 	};
 
 	self.roomList.subscribe(function() {

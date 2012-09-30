@@ -25,7 +25,7 @@ block content
 			.room(data-bind='attr: {id: identifier()}')
 				.toolbar
 					p Topic: I like turtles
-					a(href='#') Close
+					a(href='#', data-bind='click: $root.partRoom') Close
 				.users
 					ul(data-bind='foreach: users')
 						li(data-bind='text: $data')

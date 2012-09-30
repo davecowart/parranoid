@@ -22,6 +22,11 @@ function ConnectionManager(puppeteer) {
 			var puppet = puppeteer.puppets()[userId][data.connection];
 			puppet.join(data.channel);
 		});
+
+		socket.on('part', function(data) {
+			var puppet = puppeteer.puppets()[userId][data.connection];
+			puppet.part(data.channel);
+		});
 	};
 }
 
