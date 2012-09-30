@@ -67,7 +67,9 @@ function ClientViewModel(theSocket) {
 
 	self.socket.on('join', function(data) {
 		var server = self.findServer(data.connection);
+		if (server === undefined) return;
 		var room = _.find(server.rooms(), function(room) { return room.name() === data.channel && room.connection() === data.connection; });
+		if (room === undefined) return;
 		room.users.push(data.nick);
 	});
 
@@ -90,7 +92,9 @@ function ClientViewModel(theSocket) {
 
 	self.socket.on('partRoom', function(data) {
 		var server = self.findServer(data.connection);
+		if (server === undefined) return;
 		var room = self.findRoom(data.connection, data.channel);
+		if (room === undefined) return;
 		server.rooms.remove(room);
 	});
 
@@ -106,6 +110,7 @@ function ClientViewModel(theSocket) {
 
 	self.findRoom = function(connection, channel) {
 		var server = self.findServer(connection);
+		if (server === undefined) return;
 		return _.find(server.rooms(), function(room) { return room.name() === channel && room.connection() === connection; });
 	};
 
