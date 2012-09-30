@@ -35,7 +35,7 @@ block content
 						span.sender(data-bind='text: nick')
 						span.text(data-bind='text: text')
 					// /ko
-					input.messageInput(type='text', data-bind='attr: {id: "msg_" + identifier()}')
+					input.messageInput(type='text', data-bind='attr: {id: "msg_" + identifier()}, event: {keyup: $root.keyupSendMessage}')
 					button.send(type='button', data-bind='click: $root.sendMessage') Send		
 			// /ko
 			#tabs-join

@@ -129,8 +129,8 @@ function ClientViewModel(theSocket) {
 	};
 
 	self.keyupJoinRoom = function(data, event) {
-		if (event.keyCode === 13)
-			self.joinRoom();
+		if (event.keyCode !== 13) return;
+		self.joinRoom();
 	};
 
 	self.partRoom = function(room) {
@@ -144,6 +144,11 @@ function ClientViewModel(theSocket) {
 		var message = new MessageViewModel({nick: server.screenname(), text: input.val() });
 		room.messages.push(message);
 		input.val('');
+	};
+
+	self.keyupSendMessage = function(room, event) {
+		if (event.keyCode !== 13) return;
+		self.sendMessage(room);
 	};
 
 	self.roomList.subscribe(function() {
