@@ -7,9 +7,10 @@ module.exports.init = function(user, connection, clientManager, channels, connec
 		channels: channels || []
 	});
 
-	bot.addListener('message', function(from, to, message) {
+	bot.addListener('message', function(nick, to, text, message) {
 		//TODO: log to database
-		console.log('received a generic message from %s to %s: %s', from, to, message);
+		console.log('received a generic message from %s to %s: %s', nick, to, text);
+		emit('message', { connection: connection, channel: to, nick: nick, to: to, text: text }, clientManager, user._id);
 	});
 
 	bot.addListener('registered', function(message) {

@@ -26,11 +26,11 @@ function RoomViewModel() {
 	});
 }
 
-function MessageViewModel() {
+function MessageViewModel(data) {
 	var self = this;
-	self.room = '';
-	self.timestamp = '';
-	self.message = '';
+	self.nick = data.nick || '';
+	self.timestamp = data.timestamp || Date.now();
+	self.text = data.text || '';
 }
 
 function ClientViewModel(theSocket) {
@@ -39,11 +39,14 @@ function ClientViewModel(theSocket) {
 	self.socket = theSocket;
 
 	self.roomList = ko.computed(function() {
-		// var servers = self.servers();
-		// var x = _.map(servers, function(server) { return server.rooms(); });
-		// console.log(x);
-		// return _.flatten(x);
 		return _.flatten(_.map(self.servers(), function(server) { return server.rooms(); }));
+	});
+
+	self.socket.on('message', function(data) {
+		var server = self.findServer(data.connection);
+		var room = self.findRoom(data.connection, data.channel);
+		var message = new MessageViewModel(data);
+		room.messages.push(message);
 	});
 
 	self.socket.on('connect', function() {
@@ -69,7 +72,6 @@ function ClientViewModel(theSocket) {
 	});
 
 	self.socket.on('part', function(data) {
-		var server = self.findServer(data.connection);
 		var room = self.findRoom(data.connection, data.channel);
 		room.users.remove(data.nick);
 	});
@@ -93,8 +95,6 @@ function ClientViewModel(theSocket) {
 	});
 
 	self.socket.on('users', function(data) {
-		var server = self.findServer(data.connection);
-		if (server === undefined) return;
 		var room = self.findRoom(data.connection, data.channel);
 		if (room === undefined) return;
 		room.users(data.users);

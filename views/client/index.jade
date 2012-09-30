@@ -30,22 +30,11 @@ block content
 					ul(data-bind='foreach: users')
 						li(data-bind='text: $data')
 				.messages
+					// ko foreach: messages
 					.message
-						span.sender User1
-						span.timestamp 12:34
-						span.messageBody This is a message that was sent from somewhere
-					.message
-						span.sender User1
-						span.timestamp 12:34
-						span.messageBody This is a message that was sent from somewhere
-					.message
-						span.sender User1
-						span.timestamp 12:34
-						span.messageBody This is a message that was sent from somewhere
-					.message
-						span.sender User1
-						span.timestamp 12:34
-						span.messageBody This is a message that was sent from somewhere
+						span.sender(data-bind='text: nick')
+						span.text(data-bind='text: text')
+					// /ko
 					input.messageInput(type='text')
 					button.send(type='button') Send		
 			// /ko
