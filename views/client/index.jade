@@ -43,7 +43,7 @@ block content
 				select#join-server(data-bind='options: $root.servers, optionsText: "connection", optionsValue: "connection"')
 
 				label(for='join-room') Room
-				input#join-room(type='text', value='#ix2-test')	
+				input#join-room(type='text', value='#ix2-test', data-bind='event: {keyup: $root.keyupJoinRoom}')	
 
 				button#join-button(type='button', data-bind='click: $root.joinRoom') Join
 

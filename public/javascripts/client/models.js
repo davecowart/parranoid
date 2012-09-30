@@ -123,11 +123,14 @@ function ClientViewModel(theSocket) {
 	self.joinRoom = function() {
 		var roomInput = $('#join-room');
 		var channel = roomInput.val();
-		if (_.any(self.roomList(), function(room) { return room.name() === channel; })) {
-			roomInput.val('');
-			return;
-		}
+		roomInput.val('');
+		if (_.any(self.roomList(), function(room) { return room.name() === channel; })) return;
 		self.socket.emit('join', { connection: $('#join-server').val(), channel: channel });
+	};
+
+	self.keyupJoinRoom = function(data, event) {
+		if (event.keyCode === 13)
+			self.joinRoom();
 	};
 
 	self.partRoom = function(room) {
