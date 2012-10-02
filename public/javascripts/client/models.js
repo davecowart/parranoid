@@ -158,6 +158,7 @@ function ClientViewModel(theSocket) {
 
 	self.roomList.subscribe(function() {
 		setTimeout(function() { $('#rooms').tabs('destroy').tabs(); }, 50);
+		catchup();
 	});
 }
 

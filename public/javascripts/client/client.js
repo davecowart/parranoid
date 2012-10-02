@@ -23,6 +23,23 @@ function refresh() {
 	});
 }
 
+function catchup() {
+	$.get('/client/catchup', function(data) {
+		for (var i = clientViewModel.servers().length - 1; i >= 0; i--) {
+			var clientServer = clientViewModel.servers()[i];
+			var catchup = _.find(data, function(item) { return item.connection === clientServer.connection(); });
+			for (var j = clientServer.rooms().length - 1; j >= 0; j--) {
+				var clientRoom = clientServer.rooms()[j];
+				var messages = catchup.messages[clientRoom.name()];
+				clientRoom.messages.removeAll();
+				for (var k = 0; k < messages.length; k++) {
+					clientRoom.messages.push(new MessageViewModel({nick: messages[k].from, timestamp: messages[k].timstamp, text: messages[k].message}));
+				}
+			}
+		}
+	});
+}
+
 $(function() {
 	var socket = io.connect('http://localhost');
 	clientViewModel = new ClientViewModel(socket);

@@ -25,6 +25,10 @@ module.exports.puppets = function() {
 	return puppets;
 };
 
+module.exports.getLogger = function() {
+	return puppetLogger;
+};
+
 function getDummy(userId, connection) {
 	if (puppets[userId] && puppets[userId][connection])
 		return puppets[userId][connection];

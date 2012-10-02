@@ -57,10 +57,35 @@ module.exports = function (app, service, puppeteer, server) {
 
 	app.get('/client/refresh', ensureAuthenticated, function(req, res) {
 		var puppets = puppeteer.puppets()[req.user._id];
-		console.log('puppets');
-		console.log(puppets);
 		var result = _.map(puppets, function(puppet) { return { server: puppet.opt(), chans: puppet.channels() }; });
 		respondWithJson(res, result);
+	});
+
+	app.get('/client/catchup', ensureAuthenticated, function(req, res) {
+		var puppets = puppeteer.puppets()[req.user._id];
+		var puppetKeys = _.keys(puppets);
+		var output = [];
+
+		console.log('gatherer definition (in clientcontroller)');
+		var gatherer = _.after(puppetKeys.length, function() {
+			respondWithJson(res, output);
+		});
+
+		console.log('messageCallback definition');
+		var messageCallback = function(conn, messages) {
+				output.push({ connection: conn, messages: messages });
+				console.log('calling clientcontroller.gatherer');
+				gatherer();
+		};
+
+		console.log('puppet loop: ' + puppetKeys.length);
+		for (var i = puppetKeys.length - 1; i >= 0; i--) {
+			console.log('calling messages');
+			var puppetMessages = puppets[puppetKeys[i]].messages(messageCallback);
+		}
+
+		// var output = _.map(puppets, function(puppet) { return { connection: puppet.opt().server, messages: puppet.messages() }; });
+		// respondWithJson(res, output);
 	});
 
 	function ensureAuthenticated(req, res, next) {
