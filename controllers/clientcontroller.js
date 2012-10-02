@@ -1,3 +1,5 @@
+var _ = require('underscore');
+
 function ConnectionManager(puppeteer) {
 	var self = this;
 	self.clients = {};
@@ -51,6 +53,14 @@ module.exports = function (app, service, puppeteer, server) {
 		var socketId = req.param('socketid');
 		clientManager.connect(req.user, socketId);
 		respondWithJson(res);
+	});
+
+	app.get('/client/refresh', ensureAuthenticated, function(req, res) {
+		var puppets = puppeteer.puppets()[req.user._id];
+		console.log('puppets');
+		console.log(puppets);
+		var result = _.map(puppets, function(puppet) { return { server: puppet.opt(), chans: puppet.channels() }; });
+		respondWithJson(res, result);
 	});
 
 	function ensureAuthenticated(req, res, next) {

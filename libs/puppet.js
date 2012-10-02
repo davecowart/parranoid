@@ -70,6 +70,15 @@ module.exports.message = function(channel, text) {
 	bot.say(channel, text);
 };
 
+module.exports.channels = function() {
+	return bot.chans;
+};
+
+module.exports.opt = function() {
+	console.log(bot);
+	return bot.opt;
+};
+
 function emit(event, data, clientManager, userId) {
 	console.log('emitting ' + event);
 	var cc = clientManager.connectedClients[userId];
