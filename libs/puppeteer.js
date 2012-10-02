@@ -1,11 +1,16 @@
 var puppet = require('./puppet');
 var puppets = {}; //an organized crate of puppets
+var puppetLogger;
+
+module.exports.init = function(logger) {
+	puppetLogger = logger;
+};
 
 module.exports.connect = function(user, connection, clientManager, channels, done) {
 	var userId = user._id;
 	var dummy = getDummy(userId, connection);
 	if (!dummy) {
-		dummy = puppet.init(user, connection, clientManager, channels, done);
+		dummy = puppet.init(user, connection, clientManager, channels, puppetLogger, done);
 		console.log(dummy);
 		if (!puppets[userId])
 			puppets[userId] = {};

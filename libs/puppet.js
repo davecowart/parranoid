@@ -1,13 +1,20 @@
 var irc = require('irc');
 var _ = require('underscore');
 var bot, screenname;
+var puppetLogger;
+var owner, server;
 
-module.exports.init = function(user, connection, clientManager, channels, connected) {
+module.exports.init = function(user, connection, clientManager, channels, logger, connected) {
+	puppetLogger = logger;
+	owner = user;
+	server = connection;
+
 	bot = new irc.Client(connection, user.irc_username, {
 		channels: channels || []
 	});
 
 	bot.addListener('message', function(nick, to, text, message) {
+		puppetLogger.logMessage(user, connection, to, nick, text);
 		//TODO: log to database
 		console.log('received a generic message from %s to %s: %s', nick, to, text);
 		emit('message', { connection: connection, channel: to, nick: nick, to: to, text: text }, clientManager, user._id);
@@ -67,6 +74,7 @@ module.exports.part = function(channel) {
 };
 
 module.exports.message = function(channel, text) {
+	puppetLogger.logMessage(owner, server, channel, screenname, text);
 	bot.say(channel, text);
 };
 
@@ -75,7 +83,6 @@ module.exports.channels = function() {
 };
 
 module.exports.opt = function() {
-	console.log(bot);
 	return bot.opt;
 };
 

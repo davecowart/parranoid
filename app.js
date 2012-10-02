@@ -11,7 +11,8 @@ var express = require('express'),
     bundleup = require('bundle-up'),
     environment = require('./environment'),
     puppeteer = require('./libs/puppeteer'),
-    passport = require('passport');
+    passport = require('passport'),
+    logger = require('./libs/puppetLogger');
 
 var app = express();
 
@@ -43,6 +44,8 @@ app.configure(function(){
 var server = http.createServer(app);
 
 service.init(environment);
+logger.init(service);
+puppeteer.init(logger);
 var controllers = require('./libs/controllers')(app, service, puppeteer, server);
 
 app.configure('development', function(){
