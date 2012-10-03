@@ -2,6 +2,10 @@ var _ = require('underscore');
 
 module.exports = function (app, service, puppeteer, server, connectionManager) {
 	var io = require('socket.io').listen(server);
+	io.configure(function () {
+		io.set("transports", ["xhr-polling"]);
+		io.set("polling duration", 10);
+	});
 	
 	io.sockets.on('connection', function(socket) {
 		connectionManager.clients()[socket.id] = socket;
