@@ -16,7 +16,6 @@ module.exports.init = function(user, connection, connectionManager, channels, lo
 
 	bot.addListener('message', function(nick, to, text, message) {
 		puppetLogger.logMessage(user, connection, to, nick, text);
-		console.log('received a generic message from %s to %s: %s', nick, to, text);
 		emit('message', { connection: connection, channel: to, nick: nick, to: to, text: text }, connectionManager, user._id);
 	});
 
@@ -33,7 +32,7 @@ module.exports.init = function(user, connection, connectionManager, channels, lo
 			var users = message.args[3].split(' ');
 			emit('users', { connection: connection, channel: message.args[2], users: users }, connectionManager, user._id);
 		} else {
-			console.log(message.command);
+			//console.log(message.command);
 		}
 	});
 

@@ -9,18 +9,13 @@ module.exports.init = function(plogger, ulogger) {
 
 module.exports.connect = function(user, connection, connectionManager, channels, done) {
 	var userId = user._id;
-	console.log('getting dummy');
 	var dummy = getDummy(userId, connection);
-	console.log('got dummy');
 	if (!dummy) {
-		console.log('initing');
 		dummy = puppet.init(user, connection, connectionManager, channels, puppetLogger, done);
-		console.log(dummy);
 		if (!puppets[userId])
 			puppets[userId] = {};
 		puppets[userId][connection] = dummy;
 	} else {
-		console.log('connecting');
 		dummy.connect();
 		if (done) done();
 	}

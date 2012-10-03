@@ -15,7 +15,6 @@ module.exports.connect = function(user, socketId) {
 
 	var socket = _clients[socketId];
 	socket.on('connectServer', function(data) {
-		console.log(data);
 		_puppeteer.connect(user, data.connection, self);
 	});
 

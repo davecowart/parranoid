@@ -4,7 +4,7 @@ module.exports = function (app, service, puppeteer, server, connectionManager) {
 	var io = require('socket.io').listen(server);
 	io.configure(function () {
 		io.set("transports", ["xhr-polling"]);
-		io.set("polling duration", 10);
+		io.set("polling duration", 90);
 	});
 	
 	io.sockets.on('connection', function(socket) {
@@ -37,7 +37,6 @@ module.exports = function (app, service, puppeteer, server, connectionManager) {
 			respondWithJson(res, output);
 		});
 
-		console.log('messageCallback definition');
 		var messageCallback = function(conn, messages) {
 				output.push({ connection: conn, messages: messages });
 				gatherer();
