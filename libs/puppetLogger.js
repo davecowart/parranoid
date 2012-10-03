@@ -6,6 +6,7 @@ module.exports.init = function(service) {
 	messageModel = service.useModel('Message');
 	connectionModel = service.useModel('Connection');
 };
+
 module.exports.logMessage = function(user, connection, to, from, message) {
 	var msg = new messageModel.Message();
 	msg.owner = user._id;
@@ -31,21 +32,21 @@ module.exports.retrieveMessages = function(user, connection, to, returner) {
 
 module.exports.savePuppetState = function(user, puppet) {
 	var query = { owner: new ObjectId(user._id.toString()), connection: puppet.opt().server };
-	connectionModel.Connection.find(query,
-		null,
-		{limit: 1},
-		function(err, connections) {
-			var connection;
-			if (_.any(connections)) {
-				connection = _.first(connections);
-			} else {
-				connection = new connectionModel();
-			}
+	connectionModel.Connection.findOne(query,
+		function(err, connection) {
+			if (!connection) connection = new connectionModel();
 			connection.owner = user._id;
 			connection.connection = puppet.opt().server;
 			connection.channels = _.keys(puppet.channels());
 			connection.save(handleError);
 		});
+};
+
+module.exports.loadState = function(user, callback) {
+	var query = { owner: new ObjectId(user._id.toString()) };
+	connectionModel.Connection.find(query, function(err, connections) {
+		callback(connections);
+	});
 };
 
 var handleError = function(err) {

@@ -5,7 +5,7 @@ var puppetLogger;
 var owner, server;
 var puppet = this;
 
-module.exports.init = function(user, connection, clientManager, channels, logger, connected) {
+module.exports.init = function(user, connection, connectionManager, channels, logger, connected) {
 	puppetLogger = logger;
 	owner = user;
 	server = connection;
@@ -17,21 +17,21 @@ module.exports.init = function(user, connection, clientManager, channels, logger
 	bot.addListener('message', function(nick, to, text, message) {
 		puppetLogger.logMessage(user, connection, to, nick, text);
 		console.log('received a generic message from %s to %s: %s', nick, to, text);
-		emit('message', { connection: connection, channel: to, nick: nick, to: to, text: text }, clientManager, user._id);
+		emit('message', { connection: connection, channel: to, nick: nick, to: to, text: text }, connectionManager, user._id);
 	});
 
 	bot.addListener('registered', function(message) {
 		screenname = message.args[0];
-		emit('registered', { connection: connection, screenname: screenname }, clientManager, user._id);
-		puppetLogger.savePuppetState(user, puppet);
+		emit('registered', { connection: connection, screenname: screenname }, connectionManager, user._id);
+		//puppetLogger.savePuppetState(user, puppet);
 	});
 
 	bot.addListener('raw', function(message) {
 		if (message.command === 'QUIT') {
-			emit('quit', { connection: connection }, clientManager, user._id);
+			emit('quit', { connection: connection }, connectionManager, user._id);
 		} else if (message.command === 'rpl_namreply') {
 			var users = message.args[3].split(' ');
-			emit('users', { connection: connection, channel: message.args[2], users: users }, clientManager, user._id);
+			emit('users', { connection: connection, channel: message.args[2], users: users }, connectionManager, user._id);
 		} else {
 			console.log(message.command);
 		}
@@ -40,20 +40,20 @@ module.exports.init = function(user, connection, clientManager, channels, logger
 	bot.addListener('join', function(channel, nick, message) {
 		if (nick === screenname) {
 			var output = { connection: connection, channel: channel, chan: _.find(bot.chans, function(chan) { return chan.key === channel; }) };
-			emit('joinRoom', output, clientManager, user._id);
+			emit('joinRoom', output, connectionManager, user._id);
 			puppetLogger.savePuppetState(user, puppet);
 		} else {
-			emit('join', { connection: connection, channel: channel, nick: nick }, clientManager, user._id);
+			emit('join', { connection: connection, channel: channel, nick: nick }, connectionManager, user._id);
 		}
 	});
 
 	bot.addListener('part', function(channel, nick, reason, message) {
 		if (nick === screenname) {
 			var output = { connection: connection, channel: channel };
-			emit('partRoom', output, clientManager, user._id);
+			emit('partRoom', output, connectionManager, user._id);
 			puppetLogger.savePuppetState(user, puppet);
 		} else {
-			emit('part', { connection: connection, channel: channel, nick: nick, reason: reason }, clientManager, user._id);
+			emit('part', { connection: connection, channel: channel, nick: nick, reason: reason }, connectionManager, user._id);
 		}
 	});
 
@@ -113,10 +113,11 @@ module.exports.messages = function(callback) {
 	}
 };
 
-function emit(event, data, clientManager, userId) {
+function emit(event, data, connectionManager, userId) {
 	console.log('emitting ' + event);
-	var cc = clientManager.connectedClients[userId];
+	var cc = connectionManager.connectedClients()[userId];
+	if (!cc) return;
 	for (var i = cc.length - 1; i >= 0; i--) {
-		clientManager.clients[cc[i]].emit(event, data);
+		connectionManager.clients()[cc[i]].emit(event, data);
 	}
 }

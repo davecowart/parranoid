@@ -12,7 +12,9 @@ var express = require('express'),
     environment = require('./environment'),
     puppeteer = require('./libs/puppeteer'),
     passport = require('passport'),
-    logger = require('./libs/puppetLogger');
+    puppetLogger = require('./libs/puppetLogger'),
+    userLogger = require('./libs/userLogger'),
+    connectionManager = require('./libs/connectionManager');
 
 var app = express();
 
@@ -44,9 +46,14 @@ app.configure(function(){
 var server = http.createServer(app);
 
 service.init(environment);
-logger.init(service);
-puppeteer.init(logger);
-var controllers = require('./libs/controllers')(app, service, puppeteer, server);
+puppetLogger.init(service);
+userLogger.init(service);
+puppeteer.init(puppetLogger, userLogger);
+connectionManager.init(puppeteer);
+puppeteer.loadAtAppStart(connectionManager);
+console.log('connectionManager');
+console.log(connectionManager);
+var controllers = require('./libs/controllers')(app, service, puppeteer, server, connectionManager);
 
 app.configure('development', function(){
   app.use(express.errorHandler());
