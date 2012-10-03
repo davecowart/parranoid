@@ -41,7 +41,7 @@ function catchup() {
 }
 
 $(function() {
-	var socket = io.connect('http://localhost');
+	var socket = io.connect('/');
 	clientViewModel = new ClientViewModel(socket);
 	ko.applyBindings(clientViewModel);
 	$('#rooms').tabs();
