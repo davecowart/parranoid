@@ -34,12 +34,18 @@ module.exports.savePuppetState = function(user, puppet) {
 	var query = { owner: new ObjectId(user._id.toString()), connection: puppet.opt().server };
 	connectionModel.Connection.findOne(query,
 		function(err, connection) {
-			if (!connection) connection = new connectionModel();
+			if (err) console.log(err);
+			if (!connection) connection = new connectionModel.Connection();
 			connection.owner = user._id;
 			connection.connection = puppet.opt().server;
 			connection.channels = _.keys(puppet.channels());
 			connection.save(handleError);
 		});
+};
+
+module.exports.removePuppetState = function(user, connection) {
+	var query = { owner: new ObjectId(user._id.toString()), connection: connection };
+	connectionModel.Connection.remove(query).exec();
 };
 
 module.exports.loadState = function(user, callback) {

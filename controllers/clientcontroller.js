@@ -23,13 +23,14 @@ module.exports = function (app, service, puppeteer, server, connectionManager) {
 
 	app.get('/client/refresh', ensureAuthenticated, function(req, res) {
 		var puppets = puppeteer.puppets()[req.user._id];
-		if (!puppets) respondWithJson(res, false);
+		if (!puppets) respondWithJson(res, []);
 		var result = _.map(puppets, function(puppet) { return { server: puppet.opt(), chans: puppet.channels() }; });
 		respondWithJson(res, result);
 	});
 
 	app.get('/client/catchup', ensureAuthenticated, function(req, res) {
 		var puppets = puppeteer.puppets()[req.user._id];
+		if (!puppets) respondWithJson(res, []);
 		var puppetKeys = _.keys(puppets);
 		var output = [];
 
@@ -42,9 +43,8 @@ module.exports = function (app, service, puppeteer, server, connectionManager) {
 				gatherer();
 		};
 
-		console.log('puppet loop: ' + puppetKeys.length);
 		for (var i = puppetKeys.length - 1; i >= 0; i--) {
-			var puppetMessages = puppets[puppetKeys[i]].messages(messageCallback);
+			puppets[puppetKeys[i]].messages(messageCallback);
 		}
 	});
 

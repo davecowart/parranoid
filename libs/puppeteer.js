@@ -8,17 +8,7 @@ module.exports.init = function(plogger, ulogger) {
 };
 
 module.exports.connect = function(user, connection, connectionManager, channels, done) {
-	var userId = user._id;
-	var dummy = getDummy(userId, connection);
-	if (!dummy) {
-		dummy = puppet.init(user, connection, connectionManager, channels, puppetLogger, done);
-		if (!puppets[userId])
-			puppets[userId] = {};
-		puppets[userId][connection] = dummy;
-	} else {
-		dummy.connect();
-		if (done) done();
-	}
+	initializePuppet(user, connectionManager, connection, channels, done);
 };
 
 module.exports.puppets = function() {
@@ -42,19 +32,25 @@ function initializeUsers(connectionManager) {
 	userLogger.getUsers(callback);
 }
 
+function initializePuppet(user, connectionManager, connection, channels, done) {
+	var dummy = getDummy(user._id, connection);
+	if (!dummy) {
+		dummy = puppet.init(user, connection, connectionManager, channels, puppetLogger, done, function() {
+			delete puppets[user._id][connection];
+		});
+		if (!puppets[user._id])
+			puppets[user._id] = {};
+		puppets[user._id][connection] = dummy;
+	} else {
+		dummy.connect();
+		if (done) done();
+	}
+}
+
 function initializePuppets(user, connectionManager) {
 	var callback = function(connections) {
 		for (var i = connections.length - 1; i >= 0; i--) {
-			var connection = connections[i];
-			var dummy = getDummy(user._id, connection.connection);
-			if (!dummy) {
-				dummy = puppet.init(user, connection.connection, connectionManager, connection.channels, puppetLogger);
-				if (!puppets[user._id])
-					puppets[user._id] = {};
-				puppets[user._id][connection.connection] = dummy;
-			} else {
-				dummy.connect();
-			}
+			initializePuppet(user, connectionManager, connections[i].connection, connections[i].channels);
 		}
 	};
 	puppetLogger.loadState(user, callback);

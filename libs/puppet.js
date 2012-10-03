@@ -5,7 +5,7 @@ var puppetLogger;
 var owner, server;
 var puppet = this;
 
-module.exports.init = function(user, connection, connectionManager, channels, logger, connected) {
+module.exports.init = function(user, connection, connectionManager, channels, logger, connected, suicide) {
 	puppetLogger = logger;
 	owner = user;
 	server = connection;
@@ -28,6 +28,8 @@ module.exports.init = function(user, connection, connectionManager, channels, lo
 	bot.addListener('raw', function(message) {
 		if (message.command === 'QUIT') {
 			emit('quit', { connection: connection }, connectionManager, user._id);
+			puppetLogger.removePuppetState(user, connection);
+			if (suicide) suicide();
 		} else if (message.command === 'rpl_namreply') {
 			var users = message.args[3].split(' ');
 			emit('users', { connection: connection, channel: message.args[2], users: users }, connectionManager, user._id);
