@@ -1,9 +1,8 @@
 var _ = require('underscore');
 var userModel;
-//var ObjectId = require('mongoose').Types.ObjectId;
 
 module.exports.init = function(service) {
-	userModel = service.useModel('User');
+	userModel = service.useModel('user');
 };
 
 module.exports.getUsers = function(callback) {

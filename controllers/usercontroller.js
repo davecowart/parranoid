@@ -1,5 +1,5 @@
 module.exports = function (app, service) {
-  var model = service.useModel('User'),
+  var model = service.useModel('user'),
       passport = require('passport'),
       LocalStrategy = require('passport-local').Strategy;
 

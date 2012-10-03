@@ -1,9 +1,8 @@
 var environment;
 var mongoose = require('mongoose');
 
-module.exports.init = function(env, mongoose) {
+module.exports.init = function(env) {
 	environment = env;
-	mongoose = mongoose;
 };
 
 module.exports.useModel = function(modelName) {

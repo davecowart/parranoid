@@ -3,8 +3,8 @@ var messageModel, connectionModel;
 var ObjectId = require('mongoose').Types.ObjectId;
 
 module.exports.init = function(service) {
-	messageModel = service.useModel('Message');
-	connectionModel = service.useModel('Connection');
+	messageModel = service.useModel('message');
+	connectionModel = service.useModel('connection');
 };
 
 module.exports.logMessage = function(user, connection, to, from, message) {

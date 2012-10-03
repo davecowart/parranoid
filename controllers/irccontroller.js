@@ -1,5 +1,5 @@
 module.exports = function (app, service) {
-	var model = service.useModel('User');
+	var model = service.useModel('user');
 
 	app.get('/credentials', ensureAuthenticated, function(req, res) {
 		res.render('irc/credentials', { user: req.user });
