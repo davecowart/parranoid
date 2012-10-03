@@ -22,13 +22,11 @@ module.exports = function (app, service) {
 
   app.get('/login', function(req, res) {
     var returnUrl = req.param('returnUrl');
-    console.log(returnUrl);
     res.render('users/login', { user: req.user, returnUrl: returnUrl });
   });
 
   app.post('/login', passport.authenticate('local', { failureRedirect: '/login' }), function(req, res) {
     var returnUrl = req.param('returnUrl');
-    console.log(returnUrl);
     if (returnUrl && returnUrl !== 'undefined')
       res.redirect(returnUrl);
     else

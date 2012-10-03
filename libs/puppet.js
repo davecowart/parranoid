@@ -90,30 +90,23 @@ module.exports.opt = function() {
 
 module.exports.messages = function(callback) {
 	var output = {};
-	console.log(bot.chans);
-	console.log(_.keys(bot.chans));
 	var channels = _.keys(bot.chans);
-	console.log(channels);
 
 	var gatherer = _.after(channels.length, function() {
 		callback(server, output);
 	});
 
 	var gatherMessages = function(channel, messages) {
-		console.log(messages);
 		output[channel] = messages;
-		console.log('calling puppet.gatherer');
 		gatherer();
 	};
 
 	for (var i = channels.length - 1; i >= 0; i--) {
-		console.log('calling retrieveMessages');
 		var messages = puppetLogger.retrieveMessages(owner, server, channels[i], gatherMessages);
 	}
 };
 
 function emit(event, data, connectionManager, userId) {
-	console.log('emitting ' + event);
 	var cc = connectionManager.connectedClients()[userId];
 	if (!cc) return;
 	for (var i = cc.length - 1; i >= 0; i--) {

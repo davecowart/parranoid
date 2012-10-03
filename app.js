@@ -50,8 +50,6 @@ userLogger.init(service);
 puppeteer.init(puppetLogger, userLogger);
 connectionManager.init(puppeteer);
 puppeteer.loadAtAppStart(connectionManager);
-console.log('connectionManager');
-console.log(connectionManager);
 var controllers = require('./libs/controllers')(app, service, puppeteer, server, connectionManager);
 
 app.configure('development', function(){
