@@ -1,9 +1,10 @@
-var _puppeteer, _clients, _connectedClients;
+var _puppeteer, _clients, _connectedClients, self;
 
 module.exports.init = function(puppeteer) {
 	_puppeteer = puppeteer;
 	_clients = {};
 	_connectedClients = {};
+	self = this;
 };
 
 module.exports.connect = function(user, socketId) {
