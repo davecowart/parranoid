@@ -19,7 +19,7 @@
     "passport-local": "*",
     "bundle-up": "*",
     "stylus": "*",
-    "socket.io": "*",
+    "socket.io": "~0.9.10",
     "underscore": "*"
   }
 }
