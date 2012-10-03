@@ -3,6 +3,7 @@ var _ = require('underscore');
 var bot, screenname;
 var puppetLogger;
 var owner, server;
+var puppet = this;
 
 module.exports.init = function(user, connection, clientManager, channels, logger, connected) {
 	puppetLogger = logger;
@@ -15,7 +16,6 @@ module.exports.init = function(user, connection, clientManager, channels, logger
 
 	bot.addListener('message', function(nick, to, text, message) {
 		puppetLogger.logMessage(user, connection, to, nick, text);
-		//TODO: log to database
 		console.log('received a generic message from %s to %s: %s', nick, to, text);
 		emit('message', { connection: connection, channel: to, nick: nick, to: to, text: text }, clientManager, user._id);
 	});
@@ -23,6 +23,7 @@ module.exports.init = function(user, connection, clientManager, channels, logger
 	bot.addListener('registered', function(message) {
 		screenname = message.args[0];
 		emit('registered', { connection: connection, screenname: screenname }, clientManager, user._id);
+		puppetLogger.savePuppetState(user, puppet);
 	});
 
 	bot.addListener('raw', function(message) {
@@ -40,6 +41,7 @@ module.exports.init = function(user, connection, clientManager, channels, logger
 		if (nick === screenname) {
 			var output = { connection: connection, channel: channel, chan: _.find(bot.chans, function(chan) { return chan.key === channel; }) };
 			emit('joinRoom', output, clientManager, user._id);
+			puppetLogger.savePuppetState(user, puppet);
 		} else {
 			emit('join', { connection: connection, channel: channel, nick: nick }, clientManager, user._id);
 		}
@@ -49,6 +51,7 @@ module.exports.init = function(user, connection, clientManager, channels, logger
 		if (nick === screenname) {
 			var output = { connection: connection, channel: channel };
 			emit('partRoom', output, clientManager, user._id);
+			puppetLogger.savePuppetState(user, puppet);
 		} else {
 			emit('part', { connection: connection, channel: channel, nick: nick, reason: reason }, clientManager, user._id);
 		}
