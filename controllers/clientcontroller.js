@@ -19,6 +19,7 @@ module.exports = function (app, service, puppeteer, server, connectionManager) {
 
 	app.get('/client/refresh', ensureAuthenticated, function(req, res) {
 		var puppets = puppeteer.puppets()[req.user._id];
+		if (!puppets) respondWithJson(res, false);
 		var result = _.map(puppets, function(puppet) { return { server: puppet.opt(), chans: puppet.channels() }; });
 		respondWithJson(res, result);
 	});
