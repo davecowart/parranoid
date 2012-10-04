@@ -1,17 +1,15 @@
 var irc = require('irc');
 var _ = require('underscore');
-var bot, screenname;
-var puppetLogger;
-var owner, server;
-var puppet = this;
 
 module.exports.init = function(user, connection, connectionManager, channels, logger, connected, suicide) {
-	puppetLogger = logger;
-	owner = user;
-	server = connection;
+	var puppetLogger = logger;
+	var self = this;
+	var screenname;
 
-	bot = new irc.Client(connection, user.irc_username, {
-		channels: channels || []
+	var bot = new irc.Client(connection, user.irc_username, {
+		channels: channels || [],
+		userName: user.irc_username,
+		realName: user.irc_username + ' - on Parranoid IRC client'
 	});
 
 	bot.addListener('message', function(nick, to, text, message) {
@@ -34,7 +32,7 @@ module.exports.init = function(user, connection, connectionManager, channels, lo
 			var users = message.args[3].split(' ');
 			emit('users', { connection: connection, channel: message.args[2], users: users }, connectionManager, user._id);
 		} else {
-			//console.log(message.command);
+			//console.log(message);
 		}
 	});
 
@@ -42,7 +40,7 @@ module.exports.init = function(user, connection, connectionManager, channels, lo
 		if (nick === screenname) {
 			var output = { connection: connection, channel: channel, chan: _.find(bot.chans, function(chan) { return chan.key === channel; }) };
 			emit('joinRoom', output, connectionManager, user._id);
-			puppetLogger.savePuppetState(user, puppet);
+			puppetLogger.savePuppetState(user, self);
 		} else {
 			emit('join', { connection: connection, channel: channel, nick: nick }, connectionManager, user._id);
 		}
@@ -52,50 +50,47 @@ module.exports.init = function(user, connection, connectionManager, channels, lo
 		if (nick === screenname) {
 			var output = { connection: connection, channel: channel };
 			emit('partRoom', output, connectionManager, user._id);
-			puppetLogger.savePuppetState(user, puppet);
+			puppetLogger.savePuppetState(user, self);
 		} else {
 			emit('part', { connection: connection, channel: channel, nick: nick, reason: reason }, connectionManager, user._id);
 		}
 	});
 
-	return this;
-};
-
-module.exports.connect = function() {
+self.connect = function() {
 	bot.connect();
 };
 
-module.exports.quit = function() {
+self.quit = function() {
 	bot.disconnect('Later!');
 };
 
-module.exports.join = function(channel) {
+self.join = function(channel) {
 	bot.join(channel);
 };
 
-module.exports.part = function(channel) {
+self.part = function(channel) {
 	bot.part(channel);
 };
 
-module.exports.message = function(channel, text) {
-	puppetLogger.logMessage(owner, server, channel, screenname, text);
+self.message = function(channel, text) {
+	puppetLogger.logMessage(user, connection, channel, screenname, text);
 	bot.say(channel, text);
 };
 
-module.exports.channels = function() {
+self.channels = function() {
 	return bot.chans;
 };
 
-module.exports.opt = function() {
+self.opt = function() {
 	return bot.opt;
 };
 
-module.exports.messages = function(callback) {
+self.messages = function(callback) {
 	var output = {};
 	var channels = _.keys(bot.chans);
 
 	var gatherer = _.after(channels.length, function() {
-		callback(server, output);
+		callback(connection, output);
 	});
 
 	var gatherMessages = function(channel, messages) {
@@ -104,8 +99,13 @@ module.exports.messages = function(callback) {
 	};
 
 	for (var i = channels.length - 1; i >= 0; i--) {
-		var messages = puppetLogger.retrieveMessages(owner, server, channels[i], gatherMessages);
+		var messages = puppetLogger.retrieveMessages(user, connection, channels[i], gatherMessages);
 	}
+};
+
+	if (connected)
+		connected(self);
+	return self;
 };
 
 function emit(event, data, connectionManager, userId) {

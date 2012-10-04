@@ -5,10 +5,15 @@ module.exports = function (app, service, puppeteer, server, connectionManager) {
 	io.configure(function () {
 		io.set("transports", ["xhr-polling"]);
 		io.set("polling duration", 10);
+		io.set('log level', 1);
 	});
 	
 	io.sockets.on('connection', function(socket) {
 		connectionManager.clients()[socket.id] = socket;
+	});
+
+	io.sockets.on('disconnect', function(socket) {
+		delete connectionManager.clients()[socket.id];
 	});
 
 	app.get('/client', ensureAuthenticated, function(req, res) {
@@ -18,19 +23,25 @@ module.exports = function (app, service, puppeteer, server, connectionManager) {
 	app.post('/client/connect', ensureAuthenticated, function(req, res) {
 		var socketId = req.param('socketid');
 		connectionManager.connect(req.user, socketId);
-		respondWithJson(res);
+		respondWithJson(res, req.user);
 	});
 
 	app.get('/client/refresh', ensureAuthenticated, function(req, res) {
 		var puppets = puppeteer.puppets()[req.user._id];
-		if (!puppets) respondWithJson(res, []);
+		if (!puppets || !_.any(puppets)) {
+			respondWithJson(res, []);
+			return;
+		}
 		var result = _.map(puppets, function(puppet) { return { server: puppet.opt(), chans: puppet.channels() }; });
 		respondWithJson(res, result);
 	});
 
 	app.get('/client/catchup', ensureAuthenticated, function(req, res) {
 		var puppets = puppeteer.puppets()[req.user._id];
-		if (!puppets) respondWithJson(res, []);
+		if (!puppets || !_.any(puppets)) {
+			respondWithJson(res, []);
+			return;
+		}
 		var puppetKeys = _.keys(puppets);
 		var output = [];
 

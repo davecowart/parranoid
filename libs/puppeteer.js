@@ -33,17 +33,18 @@ function initializeUsers(connectionManager) {
 }
 
 function initializePuppet(user, connectionManager, connection, channels, done) {
-	var dummy = getDummy(user._id, connection);
+	var userId = user._id;
+	var dummy = getDummy(userId, connection);
 	if (!dummy) {
-		dummy = puppet.init(user, connection, connectionManager, channels, puppetLogger, done, function() {
-			delete puppets[user._id][connection];
+		dummy = new puppet.init(user, connection, connectionManager, channels, puppetLogger, done, function() {
+			delete puppets[userId][connection];
 		});
-		if (!puppets[user._id])
-			puppets[user._id] = {};
-		puppets[user._id][connection] = dummy;
+		if (!puppets[userId])
+			puppets[userId] = {};
+		puppets[userId][connection] = dummy;
 	} else {
 		dummy.connect();
-		if (done) done();
+		if (done) done(dummy);
 	}
 }
 
