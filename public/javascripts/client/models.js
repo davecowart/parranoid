@@ -142,6 +142,10 @@ function ClientViewModel(theSocket) {
 		self.socket.emit('part', { connection: room.connection(), channel: room.name() });
 	};
 
+	self.clearMessages = function(room) {
+		room.messages.removeAll();
+	};
+
 	self.sendMessage = function(room) {
 		var input = $('#msg_' + room.identifier());
 		var server = self.findServer(room.connection());
