@@ -42,13 +42,15 @@ block content
 				// button.send(type='button', data-bind='click: $root.sendMessage') Send		
 			// /ko
 			#tabs-join
-				label(for='join-server') Server
-				select#join-server(data-bind='options: $root.servers, optionsText: "connection", optionsValue: "connection"')
+				div(data-bind='visible: $root.servers().length > 0')
+					label(for='join-server') Server
+					select#join-server(data-bind='options: $root.servers, optionsText: "connection", optionsValue: "connection"')
 
-				label(for='join-room') Room
-				input#join-room(type='text', value='#ix2-test', data-bind='event: {keyup: $root.keyupJoinRoom}')	
+					label(for='join-room') Room
+					input#join-room(type='text', value='#ix2-test', data-bind='event: {keyup: $root.keyupJoinRoom}')	
 
-				button#join-button(type='button', data-bind='click: $root.joinRoom') Join
+					button#join-button(type='button', data-bind='click: $root.joinRoom') Join
+				p(data-bind='visible: $root.servers().length === 0') You must connect to a server before you can join a room
 
 block style
 	!= renderStyles('client')
