@@ -157,7 +157,7 @@ function ClientViewModel(theSocket) {
 	};
 
 	self.roomList.subscribe(function(rooms) {
-		setTimeout(function() { $('#rooms').tabs('destroy').tabs(); }, 100);
+		setTimeout(function() { $('#rooms').tabs('destroy').tabs().tabs('select', rooms.length - 1); }, 100);
 		if (rooms.length > 0)
 			catchup();
 	});
