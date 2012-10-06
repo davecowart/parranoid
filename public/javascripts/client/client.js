@@ -37,6 +37,7 @@ function catchup() {
 				}
 			}
 		}
+		setTimeout(function() { $('.messages').stick(); }, 1000);
 	});
 }
 
