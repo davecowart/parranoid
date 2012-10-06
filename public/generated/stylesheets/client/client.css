@@ -1,6 +1,7 @@
 #client {
   border: solid 1px #000;
   overflow: auto;
+  min-width: 650px;
 }
 #client #servers {
   float: left;
@@ -19,20 +20,57 @@
   color: #f00;
 }
 #client #rooms {
-  float: left;
   min-width: 400px;
+  margin-left: 150px;
+}
+#client #rooms .ui-tabs-nav {
+  height: 25px;
+  padding: 2px;
+}
+#client #rooms .ui-tabs-nav .ui-state-default a {
+  padding: 3px 8px;
+}
+#client #rooms .users .userList {
+  list-style: none;
+  padding-left: 0;
+}
+#client #rooms .room {
+  overflow: auto;
+  padding: 5px;
 }
 #client #rooms .room .toolbar {
   clear: both;
   border-bottom: solid 1px #000;
 }
+#client #rooms .room .toolbar .menuButton {
+  width: 50px;
+  height: 50px;
+  display: inline-block;
+  text-align: center;
+  margin-right: 10px;
+  vertical-align: middle;
+  background-color: #00f;
+}
 #client #rooms .room .users {
+  overflow: auto;
   float: left;
   width: 100px;
   border-right: solid 1px #000;
   height: 100%;
 }
 #client #rooms .room .messages {
+  overflow: auto;
+  height: 200px;
+}
+#client #rooms .room .messages .message .sender {
+  width: 80px;
+  text-align: right;
+  display: inline-block;
+}
+#client #rooms .room .messages .message .text {
+  padding-left: 10px;
+}
+#client #rooms .room .messageInput {
   float: left;
-  min-width: 300px;
+  width: 99%;
 }

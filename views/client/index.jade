@@ -10,6 +10,8 @@ block content
 				li
 					span(data-bind='text: connection')
 					a(href='#', data-bind='click: $root.removeServer') X
+					ul#server-room-list(data-bind='foreach: rooms')
+						li(data-bind='text: name')
 			a(href='#', data-bind='click: $root.addServer') Add Server
 
 		#rooms
@@ -24,10 +26,11 @@ block content
 			// ko foreach: roomList
 			.room(data-bind='attr: {id: identifier()}')
 				.toolbar
-					p Topic: I like turtles
-					a(href='#', data-bind='click: $root.partRoom') Close
+					a.menuButton(href='#', data-bind='click: $root.partRoom') Close
+					a.menuButton(href='#', data-bind='click: $root.clearMessages') Clear
+					span Topic: I like turtles
 				.users
-					ul(data-bind='foreach: users')
+					ul.userList(data-bind='foreach: users')
 						li(data-bind='text: $data')
 				.messages
 					// ko foreach: messages
@@ -35,8 +38,8 @@ block content
 						span.sender(data-bind='text: nick')
 						span.text(data-bind='text: text')
 					// /ko
-					input.messageInput(type='text', data-bind='attr: {id: "msg_" + identifier()}, event: {keyup: $root.keyupSendMessage}')
-					button.send(type='button', data-bind='click: $root.sendMessage') Send		
+				input.messageInput(type='text', data-bind='attr: {id: "msg_" + identifier()}, event: {keyup: $root.keyupSendMessage}')
+				// button.send(type='button', data-bind='click: $root.sendMessage') Send		
 			// /ko
 			#tabs-join
 				label(for='join-server') Server

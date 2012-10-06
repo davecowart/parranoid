@@ -5,3 +5,16 @@ body {
 body a {
   color: #00b7ff;
 }
+body .userInfo {
+  width: 300px;
+  float: right;
+}
+body .mainNav {
+  list-style: none;
+  overflow: auto;
+  padding-left: 0;
+}
+body .mainNav li {
+  float: left;
+  margin-right: 5px;
+}

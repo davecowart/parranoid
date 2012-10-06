@@ -7,8 +7,8 @@ html
 		block style
 	body
 		if user
-			p Welcome, #{user.email}
-			ul
+			p.userInfo Welcome, #{user.email}
+			ul.mainNav
 				li
 					a(href='/logout') Logout
 				li
