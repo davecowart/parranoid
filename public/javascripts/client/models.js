@@ -50,7 +50,7 @@ function ClientViewModel(theSocket) {
 	});
 
 	self.socket.on('connect', function() {
-		$.post('/client/connect', { socketid: this.socket.sessionid }, function(data) { console.log(data);});
+		$.post('/client/connect', { socketid: this.socket.sessionid });
 	});
 
 	self.socket.on('registered', function(data) {

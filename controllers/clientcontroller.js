@@ -23,7 +23,7 @@ module.exports = function (app, service, puppeteer, server, connectionManager) {
 	app.post('/client/connect', ensureAuthenticated, function(req, res) {
 		var socketId = req.param('socketid');
 		connectionManager.connect(req.user, socketId);
-		respondWithJson(res, req.user);
+		respondWithJson(res);
 	});
 
 	app.get('/client/refresh', ensureAuthenticated, function(req, res) {
