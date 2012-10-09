@@ -62,13 +62,17 @@
   overflow: auto;
   height: 200px;
 }
+#client #rooms .room .messages .message {
+  display: table-row;
+}
 #client #rooms .room .messages .message .sender {
   width: 80px;
   text-align: right;
-  display: inline-block;
+  display: table-cell;
 }
 #client #rooms .room .messages .message .text {
   padding-left: 10px;
+  display: table-cell;
 }
 #client #rooms .room .messageInput {
   float: left;
