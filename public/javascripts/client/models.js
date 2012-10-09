@@ -151,8 +151,6 @@ function ClientViewModel(theSocket) {
 		if (input.val() === '') return;
 		var server = self.findServer(room.connection());
 		self.socket.emit('message', { connection: room.connection(), channel: room.name(), text: input.val() });
-		var message = new MessageViewModel({nick: server.screenname(), text: input.val() });
-		room.messages.push(message);
 		input.val('');
 	};
 

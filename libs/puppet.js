@@ -76,6 +76,7 @@ self.message = function(channel, text) {
 	if (!text || text === '') return;
 	puppetLogger.logMessage(user, connection, channel, screenname, text);
 	bot.say(channel, text);
+	emit('message', { connection: connection, channel: channel, nick: screenname, to: channel, text: text }, connectionManager, user._id);
 };
 
 self.channels = function() {
