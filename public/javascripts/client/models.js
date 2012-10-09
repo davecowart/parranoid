@@ -148,6 +148,7 @@ function ClientViewModel(theSocket) {
 
 	self.sendMessage = function(room) {
 		var input = $('#msg_' + room.identifier());
+		if (input.val() === '') return;
 		var server = self.findServer(room.connection());
 		self.socket.emit('message', { connection: room.connection(), channel: room.name(), text: input.val() });
 		var message = new MessageViewModel({nick: server.screenname(), text: input.val() });

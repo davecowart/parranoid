@@ -73,6 +73,7 @@ self.part = function(channel) {
 };
 
 self.message = function(channel, text) {
+	if (!text || text === '') return;
 	puppetLogger.logMessage(user, connection, channel, screenname, text);
 	bot.say(channel, text);
 };
