@@ -56,54 +56,54 @@ module.exports.init = function(user, connection, connectionManager, channels, lo
 		}
 	});
 
-self.connect = function() {
-	bot.connect();
-};
-
-self.quit = function() {
-	bot.disconnect('Later!');
-};
-
-self.join = function(channel) {
-	bot.join(channel);
-};
-
-self.part = function(channel) {
-	bot.part(channel);
-};
-
-self.message = function(channel, text) {
-	if (!text || text === '') return;
-	puppetLogger.logMessage(user, connection, channel, screenname, text);
-	bot.say(channel, text);
-	emit('message', { connection: connection, channel: channel, nick: screenname, to: channel, text: text }, connectionManager, user._id);
-};
-
-self.channels = function() {
-	return bot.chans;
-};
-
-self.opt = function() {
-	return bot.opt;
-};
-
-self.messages = function(callback) {
-	var output = {};
-	var channels = _.keys(bot.chans);
-
-	var gatherer = _.after(channels.length, function() {
-		callback(connection, output);
-	});
-
-	var gatherMessages = function(channel, messages) {
-		output[channel] = messages;
-		gatherer();
+	self.connect = function() {
+		bot.connect();
 	};
 
-	for (var i = channels.length - 1; i >= 0; i--) {
-		var messages = puppetLogger.retrieveMessages(user, connection, channels[i], gatherMessages);
-	}
-};
+	self.quit = function() {
+		bot.disconnect('Later!');
+	};
+
+	self.join = function(channel) {
+		bot.join(channel);
+	};
+
+	self.part = function(channel) {
+		bot.part(channel);
+	};
+
+	self.message = function(channel, text) {
+		if (!text || text === '') return;
+		puppetLogger.logMessage(user, connection, channel, screenname, text);
+		bot.say(channel, text);
+		emit('message', { connection: connection, channel: channel, nick: screenname, to: channel, text: text }, connectionManager, user._id);
+	};
+
+	self.channels = function() {
+		return bot.chans;
+	};
+
+	self.opt = function() {
+		return bot.opt;
+	};
+
+	self.messages = function(callback) {
+		var output = {};
+		var channels = _.keys(bot.chans);
+
+		var gatherer = _.after(channels.length, function() {
+			callback(connection, output);
+		});
+
+		var gatherMessages = function(channel, messages) {
+			output[channel] = messages;
+			gatherer();
+		};
+
+		for (var i = channels.length - 1; i >= 0; i--) {
+			var messages = puppetLogger.retrieveMessages(user, connection, channels[i], gatherMessages);
+		}
+	};
 
 	if (connected)
 		connected(self);
