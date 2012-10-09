@@ -3,6 +3,7 @@ function ServerViewModel() {
 	self.connection = ko.observable();
 	self.rooms = ko.observableArray([]);
 	self.screenname = ko.observable();
+	self.topic = ko.observable();
 
 	self.joinRoom = function(roomName, done) {
 		var room = new RoomViewModel();
@@ -102,6 +103,12 @@ function ClientViewModel(theSocket) {
 		var room = self.findRoom(data.connection, data.channel);
 		if (room === undefined) return;
 		room.users(data.users);
+	});
+
+	self.socket.on('topic', function(data) {
+		var room = self.findRoom(data.connection, data.channel);
+		if (room === undefined) return;
+		room.topic(data.topic);
 	});
 
 	self.findServer = function(connection) {

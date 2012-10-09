@@ -56,6 +56,11 @@ module.exports.init = function(user, connection, connectionManager, channels, lo
 		}
 	});
 
+	bot.addListener('topic', function(channel, topic, nick, message) {
+		var output = { connection: connection, channel: channel, nick: nick, topic: topic };
+		emit('topic', output, connectionManager, user._id);
+	});
+
 	self.connect = function() {
 		bot.connect();
 	};

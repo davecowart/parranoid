@@ -28,7 +28,7 @@ block content
 				.toolbar
 					a.menuButton(href='#', data-bind='click: $root.partRoom') Close
 					a.menuButton(href='#', data-bind='click: $root.clearMessages') Clear
-					span Topic: I like turtles
+					span.topic(data-bind='text: topic')
 				.users
 					ul.userList(data-bind='foreach: users')
 						li(data-bind='text: $data')
