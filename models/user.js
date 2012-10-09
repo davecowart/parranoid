@@ -6,6 +6,7 @@ module.exports = function(mongoose) {
 	var UserSchema = new Schema({
 		email: String,
 		hashword: String,
+		salt: String,
 		irc_username: String,
 		irc_password: String
 	});
