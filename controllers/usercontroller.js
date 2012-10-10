@@ -6,7 +6,7 @@ module.exports = function (app, service) {
       LocalStrategy = require('passport-local').Strategy;
 
   app.get('/register', function(req, res) {
-    res.render('users/register', { user: null });
+    res.render('users/register', { current_user: null });
   });
 
   app.post('/register', function(req, res) {

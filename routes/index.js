@@ -1,3 +1,3 @@
 exports.index = function(req, res){
-  res.render('index', { user: req.user });
+  res.render('index', { current_user: req.user });
 };

@@ -1,4 +1,5 @@
 var _ = require('underscore');
+var recycleBin = [];
 
 module.exports = function (app, service, puppeteer, server, connectionManager) {
 	var io = require('socket.io').listen(server);
@@ -10,10 +11,10 @@ module.exports = function (app, service, puppeteer, server, connectionManager) {
 	
 	io.sockets.on('connection', function(socket) {
 		connectionManager.clients()[socket.id] = socket;
-	});
-
-	io.sockets.on('disconnect', function(socket) {
-		delete connectionManager.clients()[socket.id];
+		socket.on('disconnect', function() {
+			delete connectionManager.clients()[socket.id];
+			recycleBin.push(socket.id);
+		});
 	});
 
 	app.get('/client', ensureAuthenticated, function(req, res) {
@@ -27,6 +28,7 @@ module.exports = function (app, service, puppeteer, server, connectionManager) {
 	});
 
 	app.get('/client/refresh', ensureAuthenticated, function(req, res) {
+		cleanSocketList(req.user._id);
 		var puppets = puppeteer.puppets()[req.user._id];
 		if (!puppets || !_.any(puppets)) {
 			respondWithJson(res, []);
@@ -62,6 +64,11 @@ module.exports = function (app, service, puppeteer, server, connectionManager) {
 	function ensureAuthenticated(req, res, next) {
 		if (req.isAuthenticated()) { return next(); }
 		res.redirect('/login?returnUrl=%2fclient');
+	}
+
+	function cleanSocketList(userId) {
+		var sockets = connectionManager.connectedClients()[userId] || [];
+		connectionManager.connectedClients()[userId] = _.difference(sockets, recycleBin);
 	}
 
 	function respondWithJson(res, object) {

@@ -5,6 +5,19 @@ block content
 
 	h2= user.email
 
+	h3 Connections
 	each connection in connections
 		div
 			a(href='/admin/#{user._id}/#{puppets[connection].connection()}')= puppets[connection].connection()
+
+	h3 Sockets
+	each socketId in sockets
+		div= socketId
+
+	h3 Clients
+	each client in clients
+		if (client)
+			div
+				h4= client.id
+				span Connected:&nbsp;
+				span= !client.disconnected

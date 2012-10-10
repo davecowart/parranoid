@@ -1,6 +1,6 @@
 var _ = require('underscore');
 
-module.exports = function (app, service, puppeteer) {
+module.exports = function (app, service, puppeteer, server, connectionManager) {
 	var user = service.useModel('user').User;
 	// var connection = service.useModel('connection').Connection;
 
@@ -23,11 +23,21 @@ module.exports = function (app, service, puppeteer) {
 			if (puppets)
 				connections = _.keys(puppets);
 
+			var sockets = connectionManager.connectedClients()[req.params.userId] || [];
+			var clients = [];
+
+			for (var i = sockets.length - 1; i >= 0; i--) {
+				var socketId = sockets[i];
+				clients.push(connectionManager.clients()[socketId]);
+			}
+
 			res.render('admin/user', {
 				current_user: { email: req.user.email },
 				user: { _id: user._id, email: user.email },
 				puppets: puppets,
-				connections: connections
+				connections: connections,
+				sockets: sockets,
+				clients: clients
 			});
 		});
 	});
