@@ -1,0 +1,8 @@
+extends ../layout
+
+block content
+	h1 Parranoid Admin
+
+	each user in users
+		.user
+			a(href='/admin/#{user._id}')= user.email

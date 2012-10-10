@@ -6,8 +6,8 @@ html
 		!= renderStyles()
 		block style
 	body
-		if user
-			p.userInfo Welcome, #{user.email}
+		if current_user
+			p.userInfo Welcome, #{current_user.email}
 			ul.mainNav
 				li
 					a(href='/logout') Logout

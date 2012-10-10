@@ -1,0 +1,13 @@
+extends ../layout
+
+block content
+	h1 Parranoid Admin
+
+	h2= user.email
+
+	h3= puppet.connection()
+
+	a.kill(href='/admin/#{user._id}/#{puppet.connection()}/kill') Kill
+	
+block script
+	!= renderJs('admin')

@@ -17,7 +17,7 @@ module.exports = function (app, service, puppeteer, server, connectionManager) {
 	});
 
 	app.get('/client', ensureAuthenticated, function(req, res) {
-		res.render('client/index', {user: req.user });
+		res.render('client/index', {current_user: req.user });
 	});
 
 	app.post('/client/connect', ensureAuthenticated, function(req, res) {

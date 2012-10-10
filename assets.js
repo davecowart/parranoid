@@ -6,4 +6,7 @@ module.exports = function(assets) {
 	// client
 	assets.addJs('/public/javascripts/client/**.js', 'client');
 	assets.addCss('/public/stylesheets/client/**.styl', 'client');
+
+	// admin
+	assets.addJs('/public/javascripts/admin/**.js', 'admin');
 };

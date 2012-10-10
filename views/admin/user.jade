@@ -1,0 +1,10 @@
+extends ../layout
+
+block content
+	h1 Parranoid Admin
+
+	h2= user.email
+
+	each connection in connections
+		div
+			a(href='/admin/#{user._id}/#{puppets[connection].connection()}')= puppets[connection].connection()

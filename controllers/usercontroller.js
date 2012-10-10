@@ -11,6 +11,7 @@ module.exports = function (app, service) {
 
   app.post('/register', function(req, res) {
     var user = new model.User();
+    //TODO: make sure email is unique
     user.email = req.param('email');
     var salt = Math.random().toString(36).substr(2,16);
     user.salt = salt;
@@ -26,7 +27,7 @@ module.exports = function (app, service) {
 
   app.get('/login', function(req, res) {
     var returnUrl = req.param('returnUrl');
-    res.render('users/login', { user: null, returnUrl: returnUrl });
+    res.render('users/login', { current_user: null, returnUrl: returnUrl });
   });
 
   app.post('/login', passport.authenticate('local', { failureRedirect: '/login' }), function(req, res) {

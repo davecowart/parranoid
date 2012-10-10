@@ -4,7 +4,7 @@ module.exports = function (app, service) {
 	var model = service.useModel('user');
 
 	app.get('/credentials', ensureAuthenticated, function(req, res) {
-		res.render('irc/credentials', { user: { irc_username: req.user.irc_username} });
+		res.render('irc/credentials', { current_user: { email: req.user.email, irc_username: req.user.irc_username} });
 	});
 
 	app.post('/credentials', ensureAuthenticated, function(req, res) {

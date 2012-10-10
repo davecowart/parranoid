@@ -84,6 +84,10 @@ module.exports.init = function(user, connection, connectionManager, channels, lo
 		emit('message', { connection: connection, channel: channel, nick: screenname, to: channel, text: text }, connectionManager, user._id);
 	};
 
+	self.connection = function() {
+		return bot.opt.server;
+	};
+
 	self.channels = function() {
 		return bot.chans;
 	};
