@@ -13,6 +13,9 @@ module.exports.init = function(user, connection, connectionManager, channels, lo
 	});
 
 	bot.addListener('message', function(nick, to, text, message) {
+		if (nick === to) return;
+		if (to === screenname)
+			to = nick;
 		puppetLogger.logMessage(user, connection, to, nick, text);
 		emit('message', { connection: connection, channel: to, nick: nick, to: to, text: text }, connectionManager, user._id);
 	});
@@ -123,6 +126,7 @@ function emit(event, data, connectionManager, userId) {
 	var cc = connectionManager.connectedClients()[userId];
 	if (!cc) return;
 	for (var i = cc.length - 1; i >= 0; i--) {
-		connectionManager.clients()[cc[i]].emit(event, data);
+		if (connectionManager.clients()[cc[i]])
+			connectionManager.clients()[cc[i]].emit(event, data);
 	}
 }

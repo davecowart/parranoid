@@ -2,6 +2,7 @@ function ServerViewModel() {
 	var self = this;
 	self.connection = ko.observable();
 	self.rooms = ko.observableArray([]);
+	self.privateMessages = ko.observableArray([]);
 	self.screenname = ko.observable();
 	self.topic = ko.observable();
 
@@ -11,6 +12,7 @@ function ServerViewModel() {
 		room.connection(self.connection());
 		self.rooms.push(room);
 		$('#rooms').tabs('destroy').tabs();
+		if (done) done();
 	};
 }
 
@@ -23,6 +25,17 @@ function RoomViewModel() {
 	self.connection = ko.observable();
 	self.identifier = ko.computed(function() {
 		var id = 'tabs-' + self.connection() + '-' + self.name();
+		return id.replace(/[^a-zA-Z0-9]+/g, '_');
+	});
+}
+
+function PrivateMessageViewModel() {
+	var self = this;
+	self.messages = ko.observableArray([]);
+	self.name = ko.observable();
+	self.connection = ko.observable();
+	self.identifier = ko.computed(function() {
+		var id = 'tabs-' + self.connection() + '-pm-' + self.name();
 		return id.replace(/[^a-zA-Z0-9]+/g, '_');
 	});
 }
@@ -43,11 +56,26 @@ function ClientViewModel(theSocket) {
 		return _.flatten(_.map(self.servers(), function(server) { return server.rooms(); }));
 	});
 
+	self.pmList = ko.computed(function() {
+		return _.flatten(_.map(self.servers(), function(server) { return server.privateMessages(); }));
+	});
+
 	self.socket.on('message', function(data) {
 		var server = self.findServer(data.connection);
-		var room = self.findRoom(data.connection, data.channel);
 		var message = new MessageViewModel(data);
-		room.messages.push(message);
+		var room = self.findRoom(data.connection, data.channel);
+		if (room) {
+			room.messages.push(message);
+		} else {
+			var privateMessage = self.findPrivateMessage(data.connection, data.channel);
+			if (!privateMessage) {
+				privateMessage = new PrivateMessageViewModel();
+				privateMessage.connection(data.connection);
+				privateMessage.name(data.channel);
+				server.privateMessages.push(privateMessage);
+			}
+			privateMessage.messages.push(message);
+		}
 	});
 
 	self.socket.on('connect', function() {
@@ -121,6 +149,12 @@ function ClientViewModel(theSocket) {
 		return _.find(server.rooms(), function(room) { return room.name() === channel && room.connection() === connection; });
 	};
 
+	self.findPrivateMessage = function(connection, name) {
+		var server = self.findServer(connection);
+		if (server === undefined) return;
+		return _.find(server.privateMessages(), function(pm) { return pm.name() === name && pm.connection() === connection; });
+	};
+
 	self.addServer = function(serverConnection) {
 		var connection = serverConnection.connection || prompt('New Connection', 'irc.freenode.net');
 		if (!connection) return;
@@ -149,6 +183,11 @@ function ClientViewModel(theSocket) {
 		self.socket.emit('part', { connection: room.connection(), channel: room.name() });
 	};
 
+	self.closePrivateMessage = function(pm) {
+		var server = self.findServer(pm.connection());
+		server.privateMessages.remove(pm);
+	};
+
 	self.clearMessages = function(room) {
 		room.messages.removeAll();
 	};
@@ -170,6 +209,10 @@ function ClientViewModel(theSocket) {
 		setTimeout(function() { $('#rooms').tabs('destroy').tabs().tabs('select', rooms.length - 1); }, 100);
 		if (rooms.length > 0)
 			catchup();
+	});
+
+	self.pmList.subscribe(function(privateMessages) {
+		setTimeout(function() { $('#rooms').tabs('destroy').tabs(); });
 	});
 }
 

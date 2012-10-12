@@ -20,6 +20,10 @@ block content
 				li
 					a(data-bind='attr: {href: "#" + identifier()}, text: name')
 				// /ko
+				// ko foreach: pmList
+				li
+					a(data-bind='attr: {href: "#" + identifier()}, text: name')
+				// /ko
 				li
 					a(href='#tabs-join') +
 
@@ -41,6 +45,21 @@ block content
 				input.messageInput(type='text', data-bind='attr: {id: "msg_" + identifier()}, event: {keyup: $root.keyupSendMessage}')
 				// button.send(type='button', data-bind='click: $root.sendMessage') Send		
 			// /ko
+
+			// ko foreach: pmList
+			.room(data-bind='attr: {id: identifier()}')
+				.toolbar
+					a.menuButton(href='#', data-bind='click: $root.closePrivateMessage') Close
+				.messages
+					// ko foreach: messages
+					.message
+						span.sender(data-bind='text: nick')
+						span.text(data-bind='text: text')
+					// /ko
+				input.messageInput(type='text', data-bind='attr: {id: "msg_" + identifier()}, event: {keyup: $root.keyupSendMessage}')
+				// button.send(type='button', data-bind='click: $root.sendMessage') Send
+			// /ko
+
 			#tabs-join
 				div(data-bind='visible: $root.servers().length > 0')
 					label(for='join-server') Server
