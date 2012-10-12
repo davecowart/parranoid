@@ -47,4 +47,9 @@ $(function() {
 	ko.applyBindings(clientViewModel);
 	$('#rooms').tabs();
 	refresh();
+
+	$(document).on('dblclick', '.userList option', function() {
+		var username = $(this).text();
+		clientViewModel.addPrivateMessage('irc.freenode.net', username);
+	});
 });

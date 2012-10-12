@@ -183,6 +183,15 @@ function ClientViewModel(theSocket) {
 		self.socket.emit('part', { connection: room.connection(), channel: room.name() });
 	};
 
+	self.addPrivateMessage = function(connection, nick) {
+		var pm = new PrivateMessageViewModel();
+		pm.name(nick);
+		pm.connection(connection);
+		var server = self.findServer(connection);
+		if (server)
+			server.privateMessages.push(pm);
+	};
+
 	self.closePrivateMessage = function(pm) {
 		var server = self.findServer(pm.connection());
 		server.privateMessages.remove(pm);

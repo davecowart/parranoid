@@ -34,8 +34,8 @@ block content
 					a.menuButton(href='#', data-bind='click: $root.clearMessages') Clear
 					span.topic(data-bind='text: topic')
 				.users
-					ul.userList(data-bind='foreach: users')
-						li(data-bind='text: $data')
+					select.userList(data-bind='foreach: users', multiple='multiple')
+						option(data-bind='text: $data')
 				.messages
 					// ko foreach: messages
 					.message
